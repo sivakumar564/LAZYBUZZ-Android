@@ -30,4 +30,9 @@ class DefaultsTest {
         assertEquals(11, Dest.entries.size)
         assertEquals(Dest.entries.size, Dest.entries.map { it.route }.toSet().size)
     }
+
+    @Test fun liveCameraPreviewIsNotAPlaceholderDestination() {
+        assertEquals("preview", Dest.Preview.route)
+        assertEquals("", Dest.Preview.milestone)
+    }
 }
