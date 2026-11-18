@@ -2,8 +2,8 @@
 
 | # | Milestone | Status |
 |---|---|---|
-| 1 | Project setup, theme, navigation, splash, dashboard | Written. Not compiled (see below). |
-| 2 | CameraX integration, permissions, onboarding, preview | Not started |
+| 1 | Project setup, theme, navigation, splash, dashboard | Implemented; unit tests pass and debug APK builds |
+| 2 | CameraX integration, permissions, onboarding, preview | CameraX, runtime permission flow and live preview implemented; onboarding and device verification pending |
 | 3 | MediaPipe hand tracking | Not started |
 | 4 | Finger movement recognition, coordinate transforms | Not started |
 | 5 | Gesture recognition and arbitration, mapping screen | Not started |
@@ -25,7 +25,9 @@ Compare 10, 15 and 20 FPS, CPU vs GPU delegate, and idle 5 FPS. Record: end-to-e
 - **Lifecycle:** swipe app from Recents, accessibility service disabled while running, rotation, split-screen, Doze.
 - **OS versions:** at least Android 12, 13, 14 and 15 (foreground-service camera rules differ).
 
-## Milestone 1 verification status
-- Not compiled: no Gradle, Kotlin compiler or Android SDK in the authoring environment, and no network.
-- Not run on a device.
-- Static checks only (XML well-formedness, structure). Details in the milestone report.
+## Build verification
+- `testDebugUnitTest` passed.
+- `assembleDebug` succeeded with JDK 21 and Android SDK Platform 35.
+- The merged manifest includes CAMERA and does not include INTERNET.
+- The debug APK is at `app/build/outputs/apk/debug/app-debug.apk`.
+- Not run on a physical device or emulator; camera permission, preview, denial and camera-interruption flows still need device verification.

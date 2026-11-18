@@ -4,6 +4,11 @@
 
     <!-- Privacy: frames are processed on-device only. Strip INTERNET even if a dependency adds it. -->
     <uses-permission android:name="android.permission.INTERNET" tools:node="remove" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature
+        android:name="android.hardware.camera.front"
+        android:required="false" />
 
     <application
         android:name=".LazyBuzzApplication"

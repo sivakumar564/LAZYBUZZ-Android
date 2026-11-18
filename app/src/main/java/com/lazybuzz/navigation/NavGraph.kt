@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.lazybuzz.features.camera.CameraPreviewScreen
 import com.lazybuzz.features.dashboard.DashboardScreen
 import com.lazybuzz.features.onboarding.SplashScreen
 import com.lazybuzz.ui.components.PlaceholderScreen
@@ -18,6 +19,7 @@ fun AppNavHost() {
             })
         }
         composable(Dest.Dashboard.route) { DashboardScreen(onOpen = { nav.navigate(it.route) }) }
+        composable(Dest.Preview.route) { CameraPreviewScreen(onBack = { nav.popBackStack() }) }
         Dest.entries.filter { it.milestone.isNotEmpty() }.forEach { d ->
             composable(d.route) { PlaceholderScreen(d.title, d.blurb, d.milestone, onBack = { nav.popBackStack() }) }
         }
