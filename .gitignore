@@ -1,0 +1,6 @@
+# Gradle caches and generated build outputs
+.gradle/
+**/build/
+
+# Temporary Gradle error log
+/gradle-error.txt

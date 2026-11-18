@@ -4,7 +4,7 @@
 |---|---|---|
 | 1 | Project setup, theme, navigation, splash, dashboard | Implemented; unit tests pass and debug APK builds |
 | 2 | CameraX integration, permissions, onboarding, preview | CameraX, runtime permission flow and live preview implemented; onboarding and device verification pending |
-| 3 | MediaPipe hand tracking | Not started |
+| 3 | MediaPipe hand tracking | Implemented: CameraX ImageAnalysis feeds a bundled, on-device MediaPipe Hand Landmarker; one hand and all 21 landmarks are rendered with normalized thumb/index fingertip coordinates. `testDebugUnitTest` and `assembleDebug` pass. Successful physical-device landmark detection is not yet verified, so this milestone remains in validation. |
 | 4 | Finger movement recognition, coordinate transforms | Not started |
 | 5 | Gesture recognition and arbitration, mapping screen | Not started |
 | 6 | Virtual cursor, calibration | Not started |

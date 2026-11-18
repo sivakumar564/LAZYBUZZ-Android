@@ -30,7 +30,7 @@ android {
     buildFeatures { compose = true }
 }
 
-// M2 adds CameraX, M3 MediaPipe, M11 Room. Nothing network-capable is ever added.
+// Nothing network-capable is ever added; camera frames and hand inference stay on-device.
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
@@ -42,6 +42,7 @@ dependencies {
     implementation(libs.androidx.camera.camera2)
     implementation(libs.androidx.camera.lifecycle)
     implementation(libs.androidx.camera.view)
+    implementation(libs.mediapipe.tasks.vision)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.foundation)

@@ -2,6 +2,8 @@ package com.lazybuzz
 
 import com.lazybuzz.core.GestureRuntime
 import com.lazybuzz.core.RuntimeStatus
+import com.lazybuzz.core.camera.HandLandmarks
+import com.lazybuzz.core.camera.NormalizedLandmark
 import com.lazybuzz.data.models.GestureSettings
 import com.lazybuzz.navigation.Dest
 import org.junit.Assert.assertEquals
@@ -34,5 +36,19 @@ class DefaultsTest {
     @Test fun liveCameraPreviewIsNotAPlaceholderDestination() {
         assertEquals("preview", Dest.Preview.route)
         assertEquals("", Dest.Preview.milestone)
+    }
+
+    @Test fun handLandmarksExposeNormalizedThumbAndIndexTipsFromThe21PointSet() {
+        val points = List(HandLandmarks.LANDMARK_COUNT) { index ->
+            NormalizedLandmark(index / 20f, index / 40f, 0f)
+        }
+        val hand = HandLandmarks(points)
+
+        assertEquals(21, hand.points.size)
+        assertEquals(points[4], hand.thumbTip)
+        assertEquals(points[8], hand.indexFingerTip)
+        assertEquals(points.subList(5, 9), hand.indexFingerJoints)
+        assertEquals(0.4f, hand.indexFingerTip.x, 0f)
+        assertEquals(0.2f, hand.indexFingerTip.y, 0f)
     }
 }

@@ -2,32 +2,28 @@
 
 ## Pipeline
 ```
-CameraX (ImageAnalysis, KEEP_ONLY_LATEST)
-  -> HandTracker (MediaPipe Hand Landmarker, LIVE_STREAM)
-  -> LandmarkProcessor (rotation, mirror, normalize, smooth)
-  -> GestureEngine (arbiter + detectors)
-  -> VirtualCursor | DirectGestureController
-  -> ActionManager -> GestureAccessibilityService (dispatchGesture / performGlobalAction)
+CameraPreviewScreen (activity lifecycle)
+  -> CameraX Preview + ImageAnalysis (KEEP_ONLY_LATEST, 640x480)
+  -> LocalFrameAnalyzer (single-hand MediaPipe Hand Landmarker, VIDEO)
+  -> HandDetection (21 normalized landmarks)
+  -> Compose landmark overlay
 ```
-All stages run on a dedicated analysis executor, never the main thread. The whole pipeline lives in `CameraForegroundService`, not in an Activity, so the in-app preview, background mode and floating bubble share one instance.
+Frame inference runs on a dedicated analysis executor, never the main thread. Gesture recognition, cursor control, accessibility actions and a foreground camera service are future milestones; no background tracking is implemented yet.
 
 ## Shared state
-`core/GestureRuntime.kt` holds one process-wide `StateFlow<RuntimeState>` (status, handDetected, fps, lastGesture). The camera service is the only writer. The dashboard, live preview and floating bubble only collect it. One-shot events (a click happened) will be a separate `SharedFlow` added with the gesture engine in Milestone 5.
+Milestone 3 keeps detections local to `CameraPreviewScreen` and displays them directly in its overlay. `GestureRuntime` is not connected to this preview; shared runtime state and background camera ownership are future work.
 
 Deviation from the original tree: `GestureRuntime.kt` sits at `core/` root, and `SplashScreen.kt` is in `features/onboarding/`. Everything else follows the requested structure.
 
 ## Coordinates (one transform, one place)
-1. CameraX gives `rotationDegrees`; pass it to MediaPipe as image rotation so landmarks come back upright and normalized 0..1.
-2. Mirror the front camera exactly once, in `LandmarkProcessor` (`x = 1 - x`), so moving your hand right moves the pointer right. Direction semantics are defined in this mirrored space.
-3. The preview overlay uses the same function, then corrects for `PreviewView` crop scaling. It must not mirror again.
-4. Calibration maps the user's comfortable range to 0..1 and clamps.
-5. A One Euro filter stabilizes the cursor point only.
-6. 0..1 maps to pixels using the current display size, re-read on rotation, because `dispatchGesture` uses screen pixels.
+1. CameraX `rotationDegrees` is passed to MediaPipe so landmarks are returned in upright normalized image coordinates.
+2. The front-camera preview overlay mirrors x once and accounts for `PreviewView`'s `FILL_CENTER` crop.
+3. Fingertip values displayed in the preview are the original normalized MediaPipe coordinates; gesture-coordinate transforms and smoothing are future work.
 
-Unit tests (Milestone 4): synthetic landmarks across 4 rotations x front/back.
+Successful detection and overlay alignment still require physical-device verification.
 
 ## Frame rate
-Start at 15 FPS by timestamp throttling (drop frames, never queue). After about 1.5 s without a hand, drop to 5 FPS and return to 15 FPS on detection. Further changes only after benchmarks (see roadmap).
+The current preview requests 640x480 frames and uses CameraX `KEEP_ONLY_LATEST`; synchronous inference runs on a dedicated single-thread executor, so stale frames do not build up and the UI thread is not blocked. Fixed-rate throttling and adaptive idle FPS are not implemented. Benchmark before tuning inference rate or delegate.
 
 ## Dependencies by milestone
 M1 Compose, Navigation, DataStore. M2 CameraX. M3 MediaPipe tasks-vision (model bundled in assets, so fully offline). M8 Accessibility service (no library). M11 Room.

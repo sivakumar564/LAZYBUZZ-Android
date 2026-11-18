@@ -128,7 +128,7 @@ private fun Hero(rt: RuntimeState) {
                     Text(rt.hint(), style = MaterialTheme.typography.bodyMedium, color = cs.onSurfaceVariant)
                 }
             }
-            // Disabled until camera tracking exists (Milestones 2-3).
+            // Gesture actions remain unavailable until gesture recognition is implemented.
             Button(onClick = {}, enabled = false, modifier = Modifier.fillMaxWidth().height(52.dp)) {
                 Text("Start gesture control")
             }
@@ -145,7 +145,7 @@ private fun RuntimeStatus.label() = when (this) {
 }
 
 private fun RuntimeState.hint() = when (status) {
-    RuntimeStatus.STOPPED -> "Camera tracking isn't built into this version yet."
+    RuntimeStatus.STOPPED -> "Gesture recognition isn't implemented yet. Open the preview to see hand landmarks."
     RuntimeStatus.STARTING -> "Starting the camera."
     RuntimeStatus.RUNNING -> if (handDetected) "Hand detected." else "Show your hand to the front camera."
     RuntimeStatus.PAUSED -> "Tracking is paused."
